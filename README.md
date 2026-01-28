@@ -1,14 +1,15 @@
 ---
-title: Streamlit Template Space
+title: BasicRAG
 emoji: 🚀
 colorFrom: red
 colorTo: red
 sdk: docker
 app_port: 8501
 tags:
-  - streamlit
+- streamlit
 pinned: false
-short_description: Streamlit template space
+short_description: 'Upload a document and ask '
+license: cc-by-nc-4.0
 ---
 
 # Welcome to Streamlit!
