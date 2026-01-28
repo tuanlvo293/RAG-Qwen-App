@@ -18,8 +18,8 @@ This project implements a fundamental **RAG (Retrieval-Augmented Generation)** s
 The system utilizes optimized parameters to balance performance and resource usage:
 
 - **Embedding Model**: `BAAI/bge-m3`  
-- **Chunk Size**: `588`  
-- **Chunk Overlap**: `108`  
+- **Chunk Size**: `1000`  
+- **Chunk Overlap**: `200`  
 - **LLM**: `Qwen/Qwen2.5-0.5B-Instruct`  
 
 ---
