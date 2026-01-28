@@ -1,4 +1,3 @@
-cat << 'EOF' > README.md
 # 🤖 basicRAG: Qwen-Powered PDF Chatbot
 
 This project implements a fundamental **RAG (Retrieval-Augmented Generation)** system, allowing users to upload PDF documents and engage in a conversational Q&A based on the content. The system is optimized for efficiency on CPU-only environments.
@@ -43,4 +42,3 @@ python3 -m streamlit run src/app.py
 
 ---
 *Developed for rapid retrieval of research papers and academic textbooks during PhD research.*
-EOF
