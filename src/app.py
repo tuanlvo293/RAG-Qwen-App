@@ -8,11 +8,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from langchain_community.llms import HuggingFacePipeline
 
 st.set_page_config(page_title="RAG Qwen PDF", layout="wide")
-st.title("📚 Hệ thống RAG - PhD Assistant")
+st.title("📚 Learning Assistant")
 
 @st.cache_resource
 def load_llm():
-    # Sử dụng bản 0.5B để nhẹ máy
     model_id = "Qwen/Qwen2.5-0.5B-Instruct" 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="cpu")
@@ -21,7 +20,7 @@ def load_llm():
 
 llm = load_llm()
 
-uploaded_file = st.file_uploader("Tải lên tài liệu PDF của bạn", type="pdf")
+uploaded_file = st.file_uploader("Upload your document", type="pdf")
 
 if uploaded_file:
     with open("temp.pdf", "wb") as f:
@@ -30,32 +29,30 @@ if uploaded_file:
     loader = PyPDFLoader("temp.pdf")
     docs = loader.load()
     
-    # Chia nhỏ văn bản theo đúng thông số Colab của bạn
-    splitter = RecursiveCharacterTextSplitter(chunk_size=588, chunk_overlap=108)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=300)
     chunks = splitter.split_documents(docs)
     
     embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
     vector_store = FAISS.from_documents(chunks, embeddings)
     
-    st.success("Tài liệu đã được nạp thành công!")
+    st.success("Upload successful! You can now ask questions about the document.")
     
-    question = st.text_input("Câu hỏi của bạn:")
+    question = st.text_input("Your question:")
     if question:
-        retrieved_docs = vector_store.as_retriever(search_kwargs={"k": 4}).invoke(question)
+        retrieved_docs = vector_store.as_retriever(search_kwargs={"k": 5}).invoke(question)
         context = "\n".join(doc.page_content for doc in retrieved_docs)
         
-        # Prompt chuẩn từ mã nguồn bạn cung cấp
+        # Prompt 
         prompt = f"""<|im_start|>system
-Bạn là một trợ lý hữu ích. Trả lời câu hỏi dựa trên ngữ cảnh dưới đây một cách ngắn gọn.
-Nếu không thấy đủ thông tin, hãy nói bạn không biết. <|im_end|>
-<|im_start|>user
-Ngữ cảnh:
-{context}
+        You are a helpful assistant. Answer the question based on the context below concisely.
+        If there is not enough information, say you don't know.<|im_end|>
+        <|im_start|>user
 
-Câu hỏi: {question}<|im_end|>
-<|im_start|>assistant:"""
+        {context}
+
+        Question: {question}<|im_end|>
+        <|im_start|>assistant:"""
 
         response = llm.invoke(prompt)
-        # Tách đáp án dựa trên cấu trúc Qwen
         ans = response.split("<|im_start|>assistant:")[-1].split("<|im_end|>")[0].strip()
         st.markdown(f"**Trả lời:** {ans}")
