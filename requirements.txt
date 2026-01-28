@@ -1,3 +1,12 @@
 altair
 pandas
 streamlit
+torch
+transformers
+accelerate
+langchain
+langchain-community
+langchain-text-splitters
+pypdf
+faiss-cpu
+sentence-transformers
